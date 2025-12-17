@@ -22,7 +22,9 @@ export async function UserList() {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>All Users</CardTitle>
-            <CardDescription>User directory from JSONPlaceholder</CardDescription>
+            <CardDescription>
+              Generated: <span className="font-mono">{new Date().toLocaleTimeString()}</span>
+            </CardDescription>
           </div>
           <Badge variant="outline" className="text-green-600 border-green-600">
             use cache

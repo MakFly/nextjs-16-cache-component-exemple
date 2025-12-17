@@ -43,12 +43,12 @@ export async function PostStats() {
       <Card size="sm">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
-            Avg Posts/User
+            Generated At
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{Math.round(posts.length / uniqueUsers)}</div>
-          <p className="text-xs text-green-600 mt-1">Cached</p>
+          <div className="text-lg font-bold font-mono">{new Date().toLocaleTimeString()}</div>
+          <p className="text-xs text-green-600 mt-1">Cached for hours</p>
         </CardContent>
       </Card>
     </div>

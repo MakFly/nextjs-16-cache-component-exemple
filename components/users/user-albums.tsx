@@ -34,7 +34,10 @@ export async function UserAlbums() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Photo Albums</CardTitle>
+          <div>
+            <CardTitle>Photo Albums</CardTitle>
+            <p className="text-xs text-muted-foreground font-mono mt-1">{new Date().toLocaleTimeString()}</p>
+          </div>
           <Badge variant="outline" className="text-orange-600 border-orange-600">
             dynamic
           </Badge>
@@ -42,7 +45,7 @@ export async function UserAlbums() {
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {Object.entries(albumsByUser).slice(0, 5).map(([userId, count]) => {
+          {(Object.entries(albumsByUser) as [string, number][]).slice(0, 5).map(([userId, count]) => {
             const user = userMap[Number(userId)]
             return (
               <div

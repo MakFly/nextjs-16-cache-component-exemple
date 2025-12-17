@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { cacheLife, cacheTag } from "next/cache"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -20,7 +21,12 @@ export async function PostList() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Latest Posts</CardTitle>
+          <div>
+            <CardTitle>Latest Posts</CardTitle>
+            <p className="text-xs text-muted-foreground font-mono mt-1">
+              Generated: {new Date().toLocaleTimeString()}
+            </p>
+          </div>
           <Badge variant="outline" className="text-green-600 border-green-600">
             use cache
           </Badge>
@@ -29,9 +35,10 @@ export async function PostList() {
       <CardContent>
         <div className="grid gap-4 md:grid-cols-2">
           {posts.slice(0, 6).map((post: { id: number; userId: number; title: string; body: string }) => (
-            <div
+            <Link
               key={post.id}
-              className="border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+              href={`/posts/${post.id}`}
+              className="block border border-border rounded-lg p-4 hover:bg-muted/50 hover:border-primary/50 transition-colors"
             >
               <div className="flex items-center justify-between mb-2">
                 <Badge variant="secondary">User {post.userId}</Badge>
@@ -39,7 +46,7 @@ export async function PostList() {
               </div>
               <h3 className="font-medium line-clamp-1 mb-1">{post.title}</h3>
               <p className="text-sm text-muted-foreground line-clamp-2">{post.body}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </CardContent>

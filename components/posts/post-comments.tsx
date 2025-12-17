@@ -21,7 +21,9 @@ export async function PostComments() {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Recent Comments</CardTitle>
-            <CardDescription>{comments.length} total comments</CardDescription>
+            <CardDescription>
+              {comments.length} total &middot; <span className="font-mono">{new Date().toLocaleTimeString()}</span>
+            </CardDescription>
           </div>
           <Badge variant="outline" className="text-orange-600 border-orange-600">
             dynamic

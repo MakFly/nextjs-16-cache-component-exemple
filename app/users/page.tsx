@@ -6,6 +6,8 @@ import { UserTodos, UserTodosSkeleton } from "@/components/users/user-todos"
 import { UserAlbums, UserAlbumsSkeleton } from "@/components/users/user-albums"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { RevalidateButton } from "@/components/revalidate-button"
+import { revalidateUsers } from "@/lib/actions"
 
 export default function UsersPage() {
   return (
@@ -17,6 +19,7 @@ export default function UsersPage() {
             <Button variant="outline" size="sm" asChild>
               <Link href="/">Back</Link>
             </Button>
+            <RevalidateButton action={revalidateUsers} label="Invalidate Cache" />
           </div>
           <h1 className="text-3xl font-bold">Users</h1>
           <p className="text-muted-foreground mt-1">

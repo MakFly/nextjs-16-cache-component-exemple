@@ -24,7 +24,7 @@ export async function UserTodos() {
           <div>
             <CardTitle>Todo Summary</CardTitle>
             <CardDescription>
-              {completed} completed / {pending} pending
+              {completed}/{pending} &middot; <span className="font-mono">{new Date().toLocaleTimeString()}</span>
             </CardDescription>
           </div>
           <Badge variant="outline" className="text-orange-600 border-orange-600">

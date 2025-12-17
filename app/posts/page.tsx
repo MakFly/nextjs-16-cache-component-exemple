@@ -6,6 +6,8 @@ import { PostComments, PostCommentsSkeleton } from "@/components/posts/post-comm
 import { PostAuthors, PostAuthorsSkeleton } from "@/components/posts/post-authors"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { RevalidateButton } from "@/components/revalidate-button"
+import { revalidatePosts } from "@/lib/actions"
 
 export default function PostsPage() {
   return (
@@ -17,6 +19,7 @@ export default function PostsPage() {
             <Button variant="outline" size="sm" asChild>
               <Link href="/">Back</Link>
             </Button>
+            <RevalidateButton action={revalidatePosts} label="Invalidate Cache" />
           </div>
           <h1 className="text-3xl font-bold">Posts</h1>
           <p className="text-muted-foreground mt-1">

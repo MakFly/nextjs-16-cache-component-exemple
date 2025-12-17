@@ -29,7 +29,10 @@ export async function PostAuthors() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Top Authors</CardTitle>
+          <div>
+            <CardTitle>Top Authors</CardTitle>
+            <p className="text-xs text-muted-foreground font-mono mt-1">{new Date().toLocaleTimeString()}</p>
+          </div>
           <Badge variant="outline" className="text-orange-600 border-orange-600">
             dynamic
           </Badge>
