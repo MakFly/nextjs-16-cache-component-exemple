@@ -5,7 +5,8 @@ import { Modal } from "@/components/modal"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { delay, type Post, type User, type Comment } from "@/lib/api"
+import { delay, type Post, type Comment } from "@/lib/api"
+import type { User } from "@/lib/queries"
 import { ExternalLink } from "lucide-react"
 
 async function getPost(id: string): Promise<Post | null> {

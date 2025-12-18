@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DevRefreshButton, HardReloadButton } from "@/components/dev-tools"
+import { AuthHeader } from "@/components/auth/auth-header"
 import {
   FileText,
   Users,
@@ -84,6 +84,16 @@ const demos = [
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
+      {/* Top Navigation */}
+      <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
+          <Link href="/" className="font-semibold">
+            Next.js 16 Demo
+          </Link>
+          <AuthHeader />
+        </div>
+      </nav>
+
       <div className="container mx-auto py-12 px-4">
         {/* Hero Section */}
         <header className="text-center mb-12">

@@ -68,11 +68,12 @@ export async function invalidate() {
 - `components/` - Reusable components
   - `components/ui/` - shadcn/ui (radix-vega style)
   - `components/posts/`, `components/users/` - Domain components with skeletons
-  - `components/toast/` - Toast notification system
+  - `components/toast/` - Sonner toast notifications
   - `components/messages/` - Message form with useOptimistic
   - `components/query-examples/` - TanStack Query examples
-  - `components/search/` - Search with nuqs
-- `lib/api.ts` - Cached data functions using JSONPlaceholder API
+  - `components/search/` - Search with nuqs (debounced + manual tabs)
+- `lib/api/` - **API Client Layer** (see API Architecture below)
+- `lib/api.ts` - Legacy cached data functions
 - `lib/actions.ts` - Server Actions for mutations and revalidation
 - `lib/queries.ts` - TanStack Query keys and fetch functions
 - `lib/query-client.ts` - Shared QueryClient factory (prevents duplicate refetches)
@@ -155,3 +156,221 @@ const { q } = await cache.parse(searchParams)
 - Timestamps in cached components must be captured after async data fetch inside `"use cache"` boundary
 - Parallel routes use `@modal` folder convention with `(..)` for route interception
 - Path alias: `@/*` maps to project root
+
+---
+
+## API Architecture 2025
+
+### Overview
+
+The `lib/api/` directory contains a **universal API client** that works in both Server Components and Client Components, with built-in authentication, auto token refresh, and mock system.
+
+```
+lib/api/
+├── index.ts          # Barrel exports
+├── client.ts         # ApiClient class (universal)
+├── types.ts          # TypeScript types
+├── config.ts         # Configuration & endpoints
+├── server.ts         # Server Component utilities
+├── auth/
+│   ├── index.ts      # Server Actions: login, logout, register
+│   └── tokens.ts     # Cookie management (httpOnly)
+├── mock/
+│   ├── index.ts      # Mock system entry
+│   ├── handlers.ts   # Mock request handlers
+│   └── data/         # Mock data (users, posts, etc.)
+└── hooks/
+    ├── use-api.ts    # useApiQuery, useApiMutation
+    └── use-auth.ts   # useAuth hook
+```
+
+### Quick Start
+
+**Client Component (with hooks):**
+```tsx
+"use client"
+import { useAuth, useApiQuery } from "@/lib/api"
+
+function Profile() {
+  const { user, logout, isLoggingOut } = useAuth()
+  const { data: posts } = useApiQuery(['posts'], { endpoint: '/posts' })
+
+  return (
+    <div>
+      <p>Welcome, {user?.name}</p>
+      <Button onClick={logout}>Logout</Button>
+    </div>
+  )
+}
+```
+
+**Server Component (with cache):**
+```tsx
+import { cachedApi, getCurrentUser } from "@/lib/api"
+import { redirect } from "next/navigation"
+
+async function Dashboard() {
+  "use cache"
+  cacheLife("minutes")
+  cacheTag("dashboard")
+
+  const user = await getCurrentUser()
+  if (!user) redirect("/login")
+
+  const posts = await cachedApi.getPosts()
+  return <PostList posts={posts} />
+}
+```
+
+**Direct API calls:**
+```tsx
+import { api } from "@/lib/api"
+
+// GET
+const posts = await api.get<Post[]>('/posts')
+
+// POST
+const newPost = await api.post<Post>('/posts', { title: 'Hello', body: '...' })
+
+// With options
+const data = await api.get('/protected', { skipAuth: true, timeout: 5000 })
+```
+
+### Authentication
+
+**Tokens stored in httpOnly cookies** (secure, SSR compatible)
+
+```tsx
+// Login (Server Action)
+import { login } from "@/lib/api"
+
+const result = await login({ email: 'user@example.com', password: 'password' })
+if (result.success) {
+  // Cookies set automatically, redirect to dashboard
+}
+
+// Logout
+import { logout } from "@/lib/api"
+await logout() // Clears cookies
+
+// Check auth status (Server Component)
+import { isAuthenticated, getCurrentUser } from "@/lib/api"
+
+const isLoggedIn = await isAuthenticated()
+const user = await getCurrentUser() // { id, email, role } or null
+```
+
+**useAuth hook (Client Component):**
+```tsx
+const {
+  user,              // Current user or null
+  isLoading,         // Loading state
+  isAuthenticated,   // Boolean
+  login,             // (credentials) => void
+  logout,            // () => void
+  isLoggingIn,       // Boolean
+  isLoggingOut,      // Boolean
+} = useAuth()
+```
+
+### Auto Token Refresh
+
+Enabled by default (`autoRefresh: true`). On 401 response:
+1. Automatically calls `/auth/refresh`
+2. Updates cookies with new tokens
+3. Retries the original request
+4. If refresh fails, calls `onUnauthorized` callback
+
+```tsx
+// Disable for specific client
+const client = createApiClient({ autoRefresh: false })
+```
+
+### Mock System
+
+Enable mock mode for development without a real backend:
+
+```bash
+# .env.local
+NEXT_PUBLIC_MOCK_API=true
+```
+
+**Mock credentials:**
+- Email: `user@example.com` or `admin@example.com`
+- Password: `password`
+
+Mock handlers are in `lib/api/mock/handlers.ts`. Add custom handlers:
+```tsx
+{
+  match: (endpoint, options) => endpoint === '/custom' && options.method === 'GET',
+  delay: 300,
+  response: async () => ({ data: 'mock data' }),
+}
+```
+
+### TanStack Query Integration
+
+**useApiQuery** - Wrapper for GET requests:
+```tsx
+const { data, isLoading, error } = useApiQuery<Post[]>(
+  ['posts'],
+  { endpoint: '/posts' }
+)
+```
+
+**useApiMutation** - Wrapper for mutations:
+```tsx
+const createPost = useApiMutation<Post, CreatePostData>({
+  endpoint: '/posts',
+  method: 'POST',
+  invalidateKeys: [['posts']], // Auto-invalidate on success
+})
+
+createPost.mutate({ title: 'New Post', body: '...' })
+```
+
+**useOptimisticMutation** - Built-in optimistic updates:
+```tsx
+const deletePost = useOptimisticMutation<Post[], number>({
+  endpoint: (id) => `/posts/${id}`,
+  method: 'DELETE',
+  optimisticQueryKey: ['posts'],
+  getOptimisticData: (deletedId, posts) =>
+    posts?.filter(p => p.id !== deletedId) ?? [],
+})
+```
+
+### Configuration
+
+```tsx
+// lib/api/config.ts
+export const defaultConfig = {
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || 'https://jsonplaceholder.typicode.com',
+  timeout: 30000,
+  autoRefresh: true,
+  mockEnabled: process.env.NEXT_PUBLIC_MOCK_API === 'true',
+}
+
+// Custom client with different config
+import { createApiClient } from "@/lib/api"
+
+const customApi = createApiClient({
+  baseUrl: 'https://other-api.com',
+  timeout: 10000,
+  autoRefresh: false,
+})
+```
+
+### API Endpoints
+
+All endpoints are defined in `lib/api/config.ts`:
+```tsx
+import { API_ENDPOINTS } from "@/lib/api"
+
+API_ENDPOINTS.posts           // '/posts'
+API_ENDPOINTS.post(1)         // '/posts/1'
+API_ENDPOINTS.postComments(1) // '/posts/1/comments'
+API_ENDPOINTS.users           // '/users'
+API_ENDPOINTS.login           // '/auth/login'
+// etc.
+```

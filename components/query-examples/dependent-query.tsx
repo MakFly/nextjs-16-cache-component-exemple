@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
-import { queryKeys, fetchUser, fetchTodosByUser } from "@/lib/queries"
-import type { User, Todo } from "@/lib/api"
+import { queryKeys, fetchUser, fetchTodosByUser, type User } from "@/lib/queries"
+import type { Todo } from "@/lib/api"
 
 export function DependentQueryExample() {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null)

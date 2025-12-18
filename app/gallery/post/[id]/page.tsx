@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { delay, type Post, type Comment, type User } from "@/lib/api"
+import { delay, type Post, type Comment } from "@/lib/api"
+import type { User } from "@/lib/queries"
 
 async function getPost(id: string): Promise<Post | null> {
   "use cache"

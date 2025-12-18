@@ -1,4 +1,8 @@
-import type { Post, User, Comment, Todo } from "./api"
+import { api, API_ENDPOINTS } from "./api"
+import type { Post, Comment, Todo, JsonPlaceholderUser } from "./api"
+
+// Re-export User type for backwards compatibility
+export type User = JsonPlaceholderUser
 
 // ============================================
 // QUERY KEYS - Consistent key factory pattern
@@ -27,21 +31,21 @@ export const queryKeys = {
   // Comments
   comments: {
     all: ["comments"] as const,
-    byPost: (postId: number) => [...queryKeys.comments.all, "post", postId] as const,
+    byPost: (postId: number) =>
+      [...queryKeys.comments.all, "post", postId] as const,
   },
 
   // Todos
   todos: {
     all: ["todos"] as const,
-    byUser: (userId: number) => [...queryKeys.todos.all, "user", userId] as const,
+    byUser: (userId: number) =>
+      [...queryKeys.todos.all, "user", userId] as const,
   },
 }
 
 // ============================================
-// FETCH FUNCTIONS - Used by queries
+// FETCH FUNCTIONS - Using new API client
 // ============================================
-
-const API_BASE = "https://jsonplaceholder.typicode.com"
 
 // Posts
 export async function fetchPosts(options?: {
@@ -50,13 +54,12 @@ export async function fetchPosts(options?: {
   limit?: number
   offset?: number
 }): Promise<Post[]> {
-  const url = new URL(`${API_BASE}/posts`)
-  if (options?.userId) url.searchParams.set("userId", String(options.userId))
+  let posts = await api.get<Post[]>(API_ENDPOINTS.posts)
 
-  const res = await fetch(url.toString())
-  if (!res.ok) throw new Error("Failed to fetch posts")
-
-  let posts: Post[] = await res.json()
+  // Filter by userId
+  if (options?.userId) {
+    posts = posts.filter((p) => p.userId === options.userId)
+  }
 
   // Client-side filtering for search (JSONPlaceholder doesn't support search)
   if (options?.search) {
@@ -79,36 +82,26 @@ export async function fetchPosts(options?: {
 }
 
 export async function fetchPost(id: number): Promise<Post> {
-  const res = await fetch(`${API_BASE}/posts/${id}`)
-  if (!res.ok) throw new Error(`Failed to fetch post ${id}`)
-  return res.json()
+  return api.get<Post>(API_ENDPOINTS.post(id))
 }
 
 // Users
 export async function fetchUsers(): Promise<User[]> {
-  const res = await fetch(`${API_BASE}/users`)
-  if (!res.ok) throw new Error("Failed to fetch users")
-  return res.json()
+  return api.get<User[]>(API_ENDPOINTS.users)
 }
 
 export async function fetchUser(id: number): Promise<User> {
-  const res = await fetch(`${API_BASE}/users/${id}`)
-  if (!res.ok) throw new Error(`Failed to fetch user ${id}`)
-  return res.json()
+  return api.get<User>(API_ENDPOINTS.user(id))
 }
 
 // Comments
 export async function fetchCommentsByPost(postId: number): Promise<Comment[]> {
-  const res = await fetch(`${API_BASE}/posts/${postId}/comments`)
-  if (!res.ok) throw new Error(`Failed to fetch comments for post ${postId}`)
-  return res.json()
+  return api.get<Comment[]>(API_ENDPOINTS.postComments(postId))
 }
 
 // Todos
 export async function fetchTodosByUser(userId: number): Promise<Todo[]> {
-  const res = await fetch(`${API_BASE}/users/${userId}/todos`)
-  if (!res.ok) throw new Error(`Failed to fetch todos for user ${userId}`)
-  return res.json()
+  return api.get<Todo[]>(API_ENDPOINTS.userTodos(userId))
 }
 
 // ============================================
@@ -128,26 +121,14 @@ export async function createPost(data: {
     throw new Error("Random server error - post will be rolled back!")
   }
 
-  const res = await fetch(`${API_BASE}/posts`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) throw new Error("Failed to create post")
-  return res.json()
+  return api.post<Post>(API_ENDPOINTS.posts, data)
 }
 
 export async function updatePost(
   id: number,
   data: Partial<Pick<Post, "title" | "body">>
 ): Promise<Post> {
-  const res = await fetch(`${API_BASE}/posts/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) throw new Error(`Failed to update post ${id}`)
-  return res.json()
+  return api.patch<Post>(API_ENDPOINTS.post(id), data)
 }
 
 export async function deletePost(id: number): Promise<void> {
@@ -159,21 +140,9 @@ export async function deletePost(id: number): Promise<void> {
     throw new Error("Random server error - post will be restored!")
   }
 
-  const res = await fetch(`${API_BASE}/posts/${id}`, {
-    method: "DELETE",
-  })
-  if (!res.ok) throw new Error(`Failed to delete post ${id}`)
+  await api.delete(API_ENDPOINTS.post(id))
 }
 
-export async function toggleTodo(
-  id: number,
-  completed: boolean
-): Promise<Todo> {
-  const res = await fetch(`${API_BASE}/todos/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ completed }),
-  })
-  if (!res.ok) throw new Error(`Failed to toggle todo ${id}`)
-  return res.json()
+export async function toggleTodo(id: number, completed: boolean): Promise<Todo> {
+  return api.patch<Todo>(API_ENDPOINTS.todo(id), { completed })
 }

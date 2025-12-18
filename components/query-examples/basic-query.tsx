@@ -6,8 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { RefreshCw, AlertCircle } from "lucide-react"
-import { queryKeys, fetchUsers } from "@/lib/queries"
-import type { User } from "@/lib/api"
+import { queryKeys, fetchUsers, type User } from "@/lib/queries"
 
 export function BasicQueryExample() {
   const {
