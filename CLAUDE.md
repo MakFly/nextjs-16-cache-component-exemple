@@ -52,15 +52,15 @@ export async function invalidate() {
 
 | Route | Features |
 |-------|----------|
-| `/posts` | Cached + dynamic components, timestamps, revalidateTag |
-| `/users` | Same pattern with user data |
-| `/posts/[id]` | generateStaticParams, cached post detail |
-| `/cache-demo` | cacheLife comparison (seconds/minutes/hours/days/weeks/max) |
-| `/search` | **nuqs** for type-safe URL state, dynamic rendering |
-| `/actions-demo` | useOptimistic, Server Actions, toast notifications |
-| `/dashboard` | Nested layout with cached sidebar |
-| `/gallery` | Parallel routes with @modal intercepting route |
-| `/tanstack-query` | **TanStack Query** SSR, mutations, infinite scroll |
+| `/demo/posts-demo` | Cached + dynamic components, timestamps, revalidateTag |
+| `/demo/users-demo` | Same pattern with user data |
+| `/demo/posts-demo/[id]` | generateStaticParams, cached post detail |
+| `/demo/cache-demo` | cacheLife comparison (seconds/minutes/hours/days/weeks/max) |
+| `/demo/search-demo` | **nuqs** for type-safe URL state, dynamic rendering |
+| `/demo/actions-demo` | useOptimistic, Server Actions, toast notifications |
+| `/demo/dashboard-demo` | Nested layout with cached sidebar |
+| `/demo/gallery-demo` | Parallel routes with @modal intercepting route |
+| `/demo/tanstack-query-demo` | **TanStack Query** SSR, mutations, infinite scroll |
 
 ### Structure
 

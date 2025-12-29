@@ -106,3 +106,7 @@ export async function likePost(postId: number): Promise<ActionResult> {
 
   return { success: true, message: `Liked post #${postId}` }
 }
+
+export async function revalidateTagAction(tag: string, profile: "default" | "max" = "default") {
+  revalidateTag(tag, profile)
+}
