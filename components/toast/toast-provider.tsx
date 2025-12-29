@@ -1,6 +1,6 @@
 "use client"
 
-import { Toaster } from "sonner"
+import { Toaster } from "@/components/ui/sonner"
 import { type ReactNode } from "react"
 
 interface ToastProviderProps {
@@ -18,9 +18,6 @@ export function ToastProvider({ children }: ToastProviderProps) {
         closeButton
         toastOptions={{
           duration: 4000,
-          classNames: {
-            toast: "font-sans",
-          },
         }}
       />
     </>

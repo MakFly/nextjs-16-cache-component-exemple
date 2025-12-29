@@ -1,224 +1,129 @@
 import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { DevRefreshButton, HardReloadButton } from "@/components/dev-tools"
 import { AuthHeader } from "@/components/auth/auth-header"
-import {
-  FileText,
-  Users,
-  Timer,
-  Search,
-  MessageSquare,
-  LayoutDashboard,
-  GalleryHorizontalEnd,
-  Database,
-} from "lucide-react"
-
-const demos = [
-  {
-    title: "Posts",
-    description: "Cached & dynamic components with timestamps",
-    href: "/posts",
-    icon: FileText,
-    badges: ["use cache", "cacheTag", "revalidateTag"],
-    color: "text-green-600",
-  },
-  {
-    title: "Users",
-    description: "Same pattern with user data",
-    href: "/users",
-    icon: Users,
-    badges: ["use cache", "connection()"],
-    color: "text-blue-600",
-  },
-  {
-    title: "cacheLife Demo",
-    description: "Compare different cache durations side by side",
-    href: "/cache-demo",
-    icon: Timer,
-    badges: ["seconds", "minutes", "hours", "days", "weeks", "max"],
-    color: "text-orange-600",
-  },
-  {
-    title: "Search (nuqs)",
-    description: "Type-safe URL state with nuqs",
-    href: "/search",
-    icon: Search,
-    badges: ["nuqs", "URL state", "dynamic"],
-    color: "text-purple-600",
-  },
-  {
-    title: "TanStack Query",
-    description: "SSR, mutations, infinite scroll examples",
-    href: "/tanstack-query",
-    icon: Database,
-    badges: ["SSR", "Mutations", "Infinite", "Optimistic"],
-    color: "text-red-600",
-  },
-  {
-    title: "Server Actions",
-    description: "Forms with useOptimistic & toast notifications",
-    href: "/actions-demo",
-    icon: MessageSquare,
-    badges: ["useOptimistic", "Server Actions", "Toast"],
-    color: "text-pink-600",
-  },
-  {
-    title: "Dashboard",
-    description: "Nested layout with cached sidebar",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-    badges: ["Nested Layout", "Cached Sidebar"],
-    color: "text-cyan-600",
-  },
-  {
-    title: "Gallery",
-    description: "Parallel routes with modal overlay",
-    href: "/gallery",
-    icon: GalleryHorizontalEnd,
-    badges: ["@modal", "Intercepting Routes"],
-    color: "text-amber-600",
-  },
-]
+import { Code, ShoppingCart, Sparkles, ArrowRight } from "lucide-react"
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Top Navigation */}
+      {/* Navigation */}
       <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <Link href="/" className="font-semibold">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 max-w-7xl">
+          <Link href="/" className="font-semibold text-lg flex items-center gap-2">
+            <Code className="h-5 w-5" />
             Next.js 16 Demo
           </Link>
           <AuthHeader />
         </div>
       </nav>
 
-      <div className="container mx-auto py-12 px-4">
-        {/* Hero Section */}
-        <header className="text-center mb-12">
-          <Badge className="mb-4">Next.js 16 - Cache Components</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Cache Components Demo
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 max-w-7xl py-20 md:py-32">
+        <div className="text-center mb-16">
+          <Badge className="mb-6 text-sm px-4 py-1">Next.js 16 Showcase</Badge>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+            Explore Modern Web Development
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-            Explore <code className="bg-muted px-2 py-1 rounded">use cache</code>,
-            Server Actions, useOptimistic, parallel routes, and more
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
+            Discover Next.js 16 features and modern state management patterns
           </p>
-          <div className="flex justify-center gap-3">
-            <DevRefreshButton />
-            <HardReloadButton />
-          </div>
-        </header>
-
-        {/* Quick Explanation */}
-        <div className="max-w-4xl mx-auto mb-12 p-6 bg-muted/50 rounded-xl">
-          <h2 className="text-lg font-semibold mb-4">Cache Components Patterns</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="flex gap-2 items-start">
-              <Badge variant="outline" className="text-green-600 border-green-600 shrink-0">
-                use cache
-              </Badge>
-              <p className="text-xs text-muted-foreground">
-                Cached static shell, instant on repeat visits
-              </p>
-            </div>
-            <div className="flex gap-2 items-start">
-              <Badge variant="outline" className="text-orange-600 border-orange-600 shrink-0">
-                dynamic
-              </Badge>
-              <p className="text-xs text-muted-foreground">
-                Streams fresh content at request time
-              </p>
-            </div>
-            <div className="flex gap-2 items-start">
-              <Badge variant="outline" className="text-purple-600 border-purple-600 shrink-0">
-                cacheLife
-              </Badge>
-              <p className="text-xs text-muted-foreground">
-                Control TTL: seconds, minutes, hours, days
-              </p>
-            </div>
-            <div className="flex gap-2 items-start">
-              <Badge variant="outline" className="text-blue-600 border-blue-600 shrink-0">
-                cacheTag
-              </Badge>
-              <p className="text-xs text-muted-foreground">
-                Tag for on-demand revalidation
-              </p>
-            </div>
-          </div>
         </div>
 
-        {/* Demos Grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl mx-auto mb-16">
-          {demos.map((demo) => (
-            <Link key={demo.href} href={demo.href} className="group">
-              <Card className="h-full transition-all hover:shadow-lg hover:border-primary/50">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg bg-muted ${demo.color}`}>
-                      <demo.icon className="h-5 w-5" />
-                    </div>
-                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                      {demo.title}
+        {/* Main Cards */}
+        <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
+          {/* E-commerce Demo */}
+          <Link href="/ecommerce" className="group">
+            <Card className="h-full transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-primary/50 cursor-pointer">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-lg bg-primary/10 text-primary">
+                    <ShoppingCart className="h-8 w-8" />
+                  </div>
+                  <div className="flex-1">
+                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+                      E-commerce Demo
                     </CardTitle>
+                    <Badge variant="secondary" className="mt-2">
+                      Zustand
+                    </Badge>
                   </div>
-                  <CardDescription className="mt-2">
-                    {demo.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-1">
-                    {demo.badges.map((badge) => (
-                      <Badge key={badge} variant="secondary" className="text-xs">
-                        {badge}
-                      </Badge>
-                    ))}
+                </div>
+                <CardDescription className="text-base">
+                  Full-featured fake e-commerce website with shopping cart, checkout flow, and order history.
+                  Demonstrates client-side state management with Zustand.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Badge variant="outline" className="text-xs">
+                    Shopping Cart
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    Checkout Flow
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    Order History
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    Persistent State
+                  </Badge>
+                </div>
+                <Button className="w-full group-hover:bg-primary/90" size="lg">
+                  Explore E-commerce
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Feature Demos */}
+          <Link href="/demo" className="group">
+            <Card className="h-full transition-all duration-300 hover:shadow-xl hover:scale-[1.02] hover:border-primary/50 cursor-pointer">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 rounded-lg bg-primary/10 text-primary">
+                    <Sparkles className="h-8 w-8" />
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+                  <div className="flex-1">
+                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">
+                      Next.js 16 Features
+                    </CardTitle>
+                    <Badge variant="secondary" className="mt-2">
+                      Server Components
+                    </Badge>
+                  </div>
+                </div>
+                <CardDescription className="text-base">
+                  Comprehensive collection of Next.js 16 demos including Cache Components, Server Actions,
+                  parallel routes, streaming, and more advanced patterns.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <Badge variant="outline" className="text-xs">
+                    Cache Components
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    Server Actions
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    Parallel Routes
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    Streaming
+                  </Badge>
+                </div>
+                <Button variant="outline" className="w-full group-hover:bg-muted" size="lg">
+                  Explore Features
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
-
-        {/* Code Pattern */}
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-xl font-semibold mb-4 text-center">Basic Pattern</h2>
-          <div className="bg-zinc-950 text-zinc-100 p-6 rounded-xl text-sm font-mono overflow-x-auto">
-            <pre>{`// Cached component - instant on repeat visits
-async function CachedData() {
-  "use cache"
-  cacheLife("hours")
-  cacheTag("my-tag")
-
-  const data = await fetch("...")
-  return <div>{data}</div>
-}
-
-// Dynamic component - fresh on every request
-async function DynamicData() {
-  await connection() // opt out of cache
-  const data = await fetch("...")
-  return <div>{data}</div>
-}
-
-// Revalidate on demand (Server Action)
-async function updateData() {
-  "use server"
-  await saveToDb()
-  revalidateTag("my-tag", "default")
-}`}</pre>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <footer className="text-center mt-16 text-sm text-muted-foreground">
-          <p>
-            Built with Next.js 16 &middot; React 19 &middot; Tailwind CSS 4 &middot; shadcn/ui
-          </p>
-        </footer>
-      </div>
+      </section>
     </div>
   )
 }
